@@ -5,6 +5,8 @@ A Python utility to identify potential duplicate tasks between Things.app and To
 
 **Scope**: Only open (incomplete) tasks are analyzed. Completed tasks are excluded from both sources.
 
+**Things.app Filtering**: Trashed/deleted tasks are explicitly excluded from analysis.
+
 **Read-Only Operation**: This tool performs no modifications to either Todoist or Things.app. All operations are strictly read-only, producing only a duplicate report.
 
 ## Architecture
@@ -34,7 +36,7 @@ A Python utility to identify potential duplicate tasks between Things.app and To
 
 ```
 1. TodoistClient → Load all open tasks (excludes completed) → List[Task]
-2. ThingsReader → Load all open tasks (excludes completed) → List[Task]
+2. ThingsReader → Load all open tasks (excludes completed & trashed) → List[Task]
 3. TaskMatcher → Compare all pairs → List[DuplicateMatch]
 4. DuplicateReport → Format results → Output
 ```
@@ -70,7 +72,7 @@ class ThingsReader:
   - Error if no directories match (Things not installed or no data)
 - Query: `SELECT uuid, title FROM TMTask WHERE status = 0 AND trashed = 0`
   - `status = 0`: Open tasks only (excludes completed)
-  - `trashed = 0`: Excludes deleted tasks
+  - `trashed = 0`: **Excludes trashed/deleted tasks** (tasks in Things trash are ignored)
 - Single query to load all open tasks
 - Transform to unified Task model
 - **Read-only access**: Opens database in read-only mode, never modifies data

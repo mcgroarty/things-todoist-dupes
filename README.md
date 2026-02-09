@@ -6,6 +6,7 @@ A Python utility to identify potential duplicate tasks between Things.app and To
 
 - **Read-only operations**: Never modifies tasks in either system
 - **Efficient matching**: Uses rapidfuzz for fast string similarity comparison
+- **Smart filtering**: Only analyzes open tasks; excludes completed tasks and Tasks in Things.app trash
 - **Progress reporting**: Shows real-time progress with ETA
 - **Smart matching**: Reports highest confidence matches, all exact matches
 - **Configurable threshold**: Adjust similarity sensitivity
@@ -132,6 +133,8 @@ python main.py --progress
 ## How It Works
 
 1. **Data Loading**: Fetches all open tasks from both platforms in a single operation
+   - Todoist: Active (non-completed) tasks only
+   - Things.app: Open tasks only (excludes completed and trashed tasks)
 2. **Normalization**: Task names are normalized (lowercase, trimmed) for comparison
 3. **Matching**: Uses Levenshtein ratio to compute similarity scores
 4. **Filtering**: Only reports matches above the confidence threshold
@@ -142,6 +145,7 @@ python main.py --progress
 - Only compares task names (no metadata like due dates, tags, etc.)
 - One-directional matching (Todoist → Things)
 - Completed tasks are excluded from analysis
+- Tasks in Things.app trash are excluded from analysis
 
 ## Documentation
 
